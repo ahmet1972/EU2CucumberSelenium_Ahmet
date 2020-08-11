@@ -1,10 +1,9 @@
 package com.vytrack.step_definitions;
 
-import com.vytrack.pages.BasePage;
-import com.vytrack.pages.DashboardPage;
-import com.vytrack.pages.LoginPage;
+import com.vytrack.pages.*;
 import com.vytrack.utilities.BrowserUtils;
 import com.vytrack.utilities.ConfigurationReader;
+import com.vytrack.utilities.DBUtils;
 import com.vytrack.utilities.Driver;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -15,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ContactsStepDefs {
-//BELOW METHOD CAN BE MOVED TO LOGINSTEPDEFS CLASS AS WELL.
+
     @Given("the user logged in as {string}")
     public void the_user_logged_in_as(String userType) {
         //go to login page
@@ -37,31 +36,6 @@ public class ContactsStepDefs {
 
         //send username and password
         new LoginPage().login(username, password);
-
-  /*
-  * switch (string){
-        case "driver":
-           loginPage.loginAsDriver();
-            break;
-        case "sales manager":
-            loginPage.loginAsSalesManager();
-            break;
-        case "store manager":
-            loginPage.loginAsStoreManager();
-            break;
-        default:
-            System.out.println("invalid user");
-            break;
-    }
-    * OR
-    * String url = ConfigurationReader.get("url");
-        Driver.get().get(url);
-        String userName1 = ConfigurationReader.get(""+user+"_username");
-        String password1 = ConfigurationReader.get(""+user+"_password");
-        userName.sendKeys(userName1);
-        password.sendKeys(password1);
-        submit.click();
-*/
     }
 
     @Then("the user should see following options")
@@ -75,6 +49,7 @@ public class ContactsStepDefs {
         Assert.assertEquals(menuOptions,actualOptions);
         System.out.println("actualOptions = " + actualOptions);
         System.out.println("menuOptions = " + menuOptions);
+
 
     }
 
@@ -94,6 +69,107 @@ public class ContactsStepDefs {
 
 
     }
+
+
+    @When("the user clicks the {string} from contacts")
+    public void the_user_clicks_the_from_contacts(String email) {
+
+        BrowserUtils.waitFor(2);
+
+        //click the row with email
+        ContactsPage contactsPage = new ContactsPage();
+        contactsPage.getContactEmail(email).click();
+
+    }
+
+    @Then("the information should be same with database")
+    public void the_information_should_be_same_with_database() {
+        //get actual data from UI-GUI-Front end-Browser-Website(whatever we see)
+        ContactInfoPage contactInfoPage = new ContactInfoPage();
+        String actualFullname = contactInfoPage.contactFullName.getText();
+        String actualEmail = contactInfoPage.email.getText();
+        String actualPhone = contactInfoPage.phone.getText();
+
+        System.out.println("actualFullname = " + actualFullname);
+        System.out.println("actualEmail = " + actualEmail);
+        System.out.println("actualPhone = " + actualPhone);
+
+
+        //get expected data from database
+        String query = "select concat(first_name,' ',last_name) as fullname,e.email,phone\n" +
+                "from orocrm_contact c JOIN  orocrm_contact_email e\n" +
+                "ON c.id=e.owner_id \n" +
+                "JOIN orocrm_contact_phone p\n" +
+                "ON e.owner_id=p.owner_id\n" +
+                "where e.email=\"mbrackstone9@example.com\"";
+
+
+        //since the result is only one row, we saved in Map<String,Object>
+        //if you are dealing with multiple rows, use List<Map<String,Object>>
+        Map<String, Object> rowMap = DBUtils.getRowMap(query);
+
+
+        String expectedFullname = (String) rowMap.get("fullname");
+        String expectedEmail = (String) rowMap.get("email");
+        String expectedPhone = (String) rowMap.get("phone");
+
+        System.out.println("expectedFullname = " + expectedFullname);
+        System.out.println("expectedEmail = " + expectedEmail);
+        System.out.println("expectedPhone = " + expectedPhone);
+
+        //Compare UI to DB
+
+        Assert.assertEquals(expectedFullname,actualFullname);
+        Assert.assertEquals(expectedEmail,actualEmail);
+        Assert.assertEquals(expectedPhone,actualPhone);
+
+    }
+
+    @Then("the information {string} should be same with database")
+    public void the_information_should_be_same_with_database(String email) {
+        //get actual data from UI-GUI-Front end-Browser-Website(whatever we see)
+        ContactInfoPage contactInfoPage = new ContactInfoPage();
+        String actualFullname = contactInfoPage.contactFullName.getText();
+        String actualEmail = contactInfoPage.email.getText();
+        String actualPhone = contactInfoPage.phone.getText();
+
+        System.out.println("actualFullname = " + actualFullname);
+        System.out.println("actualEmail = " + actualEmail);
+        System.out.println("actualPhone = " + actualPhone);
+
+
+        //get expected data from database
+        String query = "select concat(first_name,' ',last_name) as fullname,e.email,phone\n" +
+                "from orocrm_contact c JOIN  orocrm_contact_email e\n" +
+                "ON c.id=e.owner_id \n" +
+                "JOIN orocrm_contact_phone p\n" +
+                "ON e.owner_id=p.owner_id\n" +
+                "where e.email='"+email+"'";
+
+
+        //since the result is only one row, we saved in Map<String,Object>
+        //if you are dealing with multiple rows, use List<Map<String,Object>>
+        Map<String, Object> rowMap = DBUtils.getRowMap(query);
+
+
+        String expectedFullname = (String) rowMap.get("fullname");
+        String expectedEmail = (String) rowMap.get("email");
+        String expectedPhone = (String) rowMap.get("phone");
+
+        System.out.println("expectedFullname = " + expectedFullname);
+        System.out.println("expectedEmail = " + expectedEmail);
+        System.out.println("expectedPhone = " + expectedPhone);
+
+        //Compare UI to DB
+
+        Assert.assertEquals(expectedFullname,actualFullname);
+        Assert.assertEquals(expectedEmail,actualEmail);
+        Assert.assertEquals(expectedPhone,actualPhone);
+
+
+    }
+
+
 
 
 }
