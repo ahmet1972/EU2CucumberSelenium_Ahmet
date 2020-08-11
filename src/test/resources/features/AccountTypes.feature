@@ -1,10 +1,10 @@
 Feature: Account types
-
+  @smoke
   Scenario: Driver user
     Given the user logged in as "driver"
     When the user navigates "Activities" "Calendar Events"
     Then the title contains "Calendar Events - Activities"
-
+   @smoke
   Scenario: Sales manager user
     Given the user logged in as "sales manager"
     When the user navigates "Customers" "Accounts"
@@ -14,7 +14,7 @@ Feature: Account types
     Given the user logged in as "store manager"
     When the user navigates "Customers" "Contacts"
     Then the title contains "Contacts - Customers"
-
+"""
 
   Scenario Outline: Login with Different accounts <userType>
     Given the user logged in as "<userType>"

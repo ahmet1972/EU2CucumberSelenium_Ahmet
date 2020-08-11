@@ -14,7 +14,6 @@ import org.openqa.selenium.WebDriver;
 
 public class LoginStepDefs {
 
-
     @Given("the user is on the login page")
     public void the_user_is_on_the_login_page() {
         //WebDriver driver = Driver.get();
@@ -30,7 +29,6 @@ public class LoginStepDefs {
         String password = ConfigurationReader.get("driver_password");
         LoginPage loginPage = new LoginPage();
         loginPage.login(username,password);
-
     }
 
     @Then("the user should be able to login")
@@ -39,8 +37,6 @@ public class LoginStepDefs {
 
         String actualTitle = Driver.get().getTitle();
         Assert.assertEquals("Verify title","Dashboard",actualTitle);
-
-
     }
 
     @When("the user enter sales manager information")
@@ -72,6 +68,8 @@ public class LoginStepDefs {
         Assert.assertTrue("Actual Title: "+Driver.get().getTitle(),Driver.get().getTitle().contains(expectedTitle));
 
     }
+
+
 
 
 

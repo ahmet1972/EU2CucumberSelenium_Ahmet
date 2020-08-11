@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ContactsStepDefs {
-
+//BELOW METHOD CAN BE MOVED TO LOGINSTEPDEFS CLASS AS WELL.
     @Given("the user logged in as {string}")
     public void the_user_logged_in_as(String userType) {
         //go to login page
@@ -37,6 +37,31 @@ public class ContactsStepDefs {
 
         //send username and password
         new LoginPage().login(username, password);
+
+  /*
+  * switch (string){
+        case "driver":
+           loginPage.loginAsDriver();
+            break;
+        case "sales manager":
+            loginPage.loginAsSalesManager();
+            break;
+        case "store manager":
+            loginPage.loginAsStoreManager();
+            break;
+        default:
+            System.out.println("invalid user");
+            break;
+    }
+    * OR
+    * String url = ConfigurationReader.get("url");
+        Driver.get().get(url);
+        String userName1 = ConfigurationReader.get(""+user+"_username");
+        String password1 = ConfigurationReader.get(""+user+"_password");
+        userName.sendKeys(userName1);
+        password.sendKeys(password1);
+        submit.click();
+*/
     }
 
     @Then("the user should see following options")
@@ -50,7 +75,6 @@ public class ContactsStepDefs {
         Assert.assertEquals(menuOptions,actualOptions);
         System.out.println("actualOptions = " + actualOptions);
         System.out.println("menuOptions = " + menuOptions);
-
 
     }
 
